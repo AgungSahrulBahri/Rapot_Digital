@@ -144,4 +144,30 @@ class TuModel extends CI_Model {
         return $this->db->delete('tb_nilai', array('nis' => $nis));
 
     }	
+
+     public function update_password($user_id, $new_password) {
+        $data = array(
+            'password' => $new_password // Simpan password baru dengan format hash MD5
+        );
+
+        $this->db->where('id_tu', $user_id);
+        $this->db->update('tb_tu', $data);
+        return $this->db->affected_rows() > 0; // Mengembalikan true jika proses update berhasil
+    }
+
+    public function verify_password($user_id, $password) {
+        $this->db->select('password');
+        $this->db->from('tb_tu');
+        $this->db->where('id_tu', $user_id);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $user_data = $query->row();
+            $hashed_password = $user_data->password;
+           
+            return $password === $hashed_password; // Membandingkan password dengan format hash MD5
+        }
+
+        return false;
+    }
 }

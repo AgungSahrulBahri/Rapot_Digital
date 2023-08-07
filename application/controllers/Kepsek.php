@@ -9,6 +9,7 @@ class Kepsek extends CI_Controller {
 
     $this->load->model('M_Nilai');
     $this->load->model('SaveModel');
+    $this->load->model('KepsekModel');
     $this->load->library('form_validation');
 
 
@@ -166,6 +167,48 @@ public function cetakrapot()
 
         $this->load->view('kepsek/cetakrapot', $data);
   }
+
+  function change_password(){
+		$username=$this->session->userdata('username');
+		$x['user']=$this->KepsekModel->get($username);
+		$this->load->view('kepsek/change_password',$x);
+	}
+
+  public function update_password() {
+        // Validasi input form
+        $this->form_validation->set_rules('old_password', 'Old Password', 'required');
+        $this->form_validation->set_rules('new_password', 'New Password', 'required|min_length[6]');
+        $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'required|matches[new_password]');
+
+        $username=$this->session->userdata('username');
+        $x['user']=$this->KepsekModel->get($username);
+        $user_object = $x['user'];
+        $uid = $user_object->id_kepsek;
+
+        if ($this->form_validation->run() === FALSE) {
+            $this->load->view('kepsek/change_password');
+        } else {
+            $user_id = $uid; // Gantikan dengan ID user yang sesuai
+            $old_password = $this->input->post('old_password');
+            $new_password = $this->input->post('new_password');
+
+            // Verifikasi password lama
+            if ($this->KepsekModel->verify_password($user_id, md5($old_password))) {
+                // Update password baru
+                $this->KepsekModel->update_password($user_id, md5($new_password));
+
+                // Tampilkan pesan sukses atau lakukan redirect ke halaman sukses
+                // echo "Password updated successfully!";
+                $this->session->set_flashdata('simpan', 'Password updated successfully!');
+                redirect('kepsek/change_password/');
+            } else {
+                // Tampilkan pesan error atau lakukan redirect kembali ke halaman form
+                // echo "Invalid old password!";
+                $this->session->set_flashdata('hapus', 'Invalid old password!');
+                redirect('kepsek/change_password/');
+            }
+        }
+    }
 
 
 }

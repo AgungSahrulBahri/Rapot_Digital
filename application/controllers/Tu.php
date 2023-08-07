@@ -1045,4 +1045,46 @@ public function cetakrapot()
     redirect('Tu/guru');
   }
 
+  function change_password(){
+		$username=$this->session->userdata('username');
+		$x['user']=$this->TuModel->get($username);
+		$this->load->view('tu/change_password',$x);
+	}
+
+  public function update_password() {
+        // Validasi input form
+        $this->form_validation->set_rules('old_password', 'Old Password', 'required');
+        $this->form_validation->set_rules('new_password', 'New Password', 'required|min_length[6]');
+        $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'required|matches[new_password]');
+
+        $username=$this->session->userdata('username');
+        $x['user']=$this->TuModel->get($username);
+        $user_object = $x['user'];
+        $uid = $user_object->id_tu;
+
+        if ($this->form_validation->run() === FALSE) {
+            $this->load->view('tu/change_password');
+        } else {
+            $user_id = $uid; // Gantikan dengan ID user yang sesuai
+            $old_password = $this->input->post('old_password');
+            $new_password = $this->input->post('new_password');
+
+            // Verifikasi password lama
+            if ($this->TuModel->verify_password($user_id, md5($old_password))) {
+                // Update password baru
+                $this->TuModel->update_password($user_id, md5($new_password));
+
+                // Tampilkan pesan sukses atau lakukan redirect ke halaman sukses
+                // echo "Password updated successfully!";
+                $this->session->set_flashdata('simpan', 'Password updated successfully!');
+                redirect('Tu/change_password/');
+            } else {
+                // Tampilkan pesan error atau lakukan redirect kembali ke halaman form
+                // echo "Invalid old password!";
+                $this->session->set_flashdata('hapus', 'Invalid old password!');
+                redirect('Tu/change_password/');
+            }
+        }
+    }
+
 }
