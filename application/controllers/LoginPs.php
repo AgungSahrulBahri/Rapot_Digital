@@ -18,6 +18,8 @@ class LoginPs extends CI_Controller {
 		$username = $this->input->post('username'); // Ambil isi dari inputan username pada form login
 		$password = md5($this->input->post('password')); // Ambil isi dari inputan password pada form login dan encrypt dengan md5
 
+		
+
 		$user = $this->PsModel->get($username); // Panggil fungsi get yang ada di UserModel.php
 
 		if(empty($user)){ // Jika hasilnya kosong / user tidak ditemukan

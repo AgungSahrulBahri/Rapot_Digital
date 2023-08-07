@@ -51,6 +51,7 @@
                                             <i class="fa fa-angle-down ml-2 opacity-8"></i>
                                         </a>
                                         <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
+                                            <button type="button" tabindex="0" class="dropdown-item"><a href="<?php echo base_url('LoginGuru/change_password') ?>"> Change Password</a></button>
                                             <button type="button" tabindex="0" class="dropdown-item"><a href="<?php echo base_url('LoginGuru/logout') ?>"> Logout</a></button>
                                             
                                             
